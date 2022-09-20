@@ -14,7 +14,6 @@ import {
     findOrganizations,
     findOrganizationById
 } from '../services/organization.services'
-import { number } from 'zod';
 
 export const createOrganization = async (
     req: Request<{}, {}, CreateOrganizationInput>,
@@ -133,13 +132,6 @@ export const deleteOrganization = async (
         if (!organizationInDB) {
             return next(new AppError(404, 'Organización con ese ID no encontrada'));
         }
-
-        res.status(200).json({
-            status: 'success',
-            data: {
-                organizationInDB,
-            },
-        });
 
         await organizationInDB.remove();
 
