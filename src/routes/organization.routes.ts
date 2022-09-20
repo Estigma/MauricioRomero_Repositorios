@@ -10,7 +10,8 @@ import { validate } from '../middleware/validate';
 import {
     createOrganizationSchema, 
     getOrganizationSchema,
-    deleteOrganizationSchema
+    deleteOrganizationSchema,
+    updateOrganizationSchema
   } from '../schemas/organization.schema';
 
 const router = express.Router();
@@ -23,6 +24,6 @@ router
     .route('/organization/:id_organization')
     .delete(validate(deleteOrganizationSchema), deleteOrganization)
     .get(validate(getOrganizationSchema), getOrganization)
-    .patch(updateOrganization)
+    .patch(validate(updateOrganizationSchema), updateOrganization)
 
 export default router

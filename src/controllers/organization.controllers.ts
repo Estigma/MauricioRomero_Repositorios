@@ -5,7 +5,8 @@ import AppError from '../utils/appError'
 import {
     GetOrganizationInput,
     CreateOrganizationInput,
-    DeleteOrganizationInput
+    DeleteOrganizationInput,
+    UpdateOrganizationInput
 } from '../schemas/organization.schema';
 
 import {
@@ -89,35 +90,30 @@ export const getOrganization = async (
     }
 };
 
-export const updateOrganization = async (req: Request, res: Response) => {
+export const updateOrganization = async (
+    req: Request<UpdateOrganizationInput['params'], {}, UpdateOrganizationInput['body']>,
+    res: Response,
+    next: NextFunction
+) => {
     try {
-        const { name, status } = req.body;
+        const organizationInDB = await findOrganizationById(Number(req.params.id_organization));
 
-        const organization = new Organization()
-
-        const organizationInDB = await findOrganizationByName(name);
-
-        if (organizationInDB != null) {
-            return res.status(409).json({
-                status: 'fail',
-                message: 'Nombre de organización ya existe',
-            });
+        if (!organizationInDB) {
+            return next(new AppError(404, 'Organización con ese ID no encontrada'));
         }
 
-        organization.name = name;
-        organization.status = status;
+        Object.assign(organizationInDB, req.body);
 
-        const result = await createOrganizationSevice(organization);
-
-        res.status(201).json({
+        const updatedOrganization = await organizationInDB.save();
+        
+        res.status(200).json({
             status: 'success',
             data: {
-                result,
+              post: updatedOrganization,
             },
-        });
-
-    } catch (error: any) {
-        return res.status(500).json({ message: error.message })
+          });
+    } catch (err: any) {
+        next(err);
     }
 };
 
