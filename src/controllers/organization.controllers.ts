@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express'
-import { Organization } from '../entities/Organization'
 import AppError from '../utils/appError'
 
 import {
@@ -26,10 +25,7 @@ export const createOrganization = async (
         const organizationInDB = await findOrganizationByName(req.body.name as string);
 
         if (organizationInDB != null) {
-            return res.status(409).json({
-                status: 'fail',
-                message: 'Nombre de organización ya existe',
-            });
+            return res.status(409).json({ message: 'Nombre de organización ya existe'});
         }
 
         const result = await createOrganizationSevice(req.body);
@@ -54,12 +50,7 @@ export const getOrganizations = async (
     try {
         const organizationsInDB = await findOrganizations();
 
-        res.status(200).json({
-            status: 'success',
-            data: {
-                organizationsInDB,
-            },
-        });
+        res.status(200).json(organizationsInDB);
 
     } catch (err: any) {
         next(err);
@@ -78,12 +69,7 @@ export const getOrganization = async (
             return next(new AppError(404, 'Organización con ese ID no encontrada'));
         }
 
-        res.status(200).json({
-            status: 'success',
-            data: {
-                organizationInDB,
-            },
-        });
+        res.status(200).json(organizationInDB);
 
     } catch (err: any) {
         next(err);
@@ -106,12 +92,7 @@ export const updateOrganization = async (
 
         const updatedOrganization = await organizationInDB.save();
         
-        res.status(200).json({
-            status: 'success',
-            data: {
-              post: updatedOrganization,
-            },
-          });
+        res.status(200).json(updatedOrganization);
     } catch (err: any) {
         next(err);
     }
@@ -131,10 +112,7 @@ export const deleteOrganization = async (
 
         await organizationInDB.remove();
 
-        res.status(204).json({
-        status: 'success',
-        data: null,
-        });
+        res.status(204).json();
 
     } catch (err: any) {
         next(err);
