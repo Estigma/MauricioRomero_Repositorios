@@ -19,18 +19,18 @@ export class Metrics extends BaseEntity {
     })
     repository: Repository;
 
-    @PrimaryColumn()
+    @PrimaryColumn({nullable: false})
     id_repository: number
 
-    @Column()
+    @Column({nullable: false})
     coverage: number
 
-    @Column()
+    @Column({nullable: false})
     vulnerabilities: number
 
-    @Column()
+    @Column({nullable: false})
     hotspot: number
 
-    @Column()
+    @Column({nullable: false})
     code_smells: number
 }

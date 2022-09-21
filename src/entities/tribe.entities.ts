@@ -22,10 +22,13 @@ export class Tribe extends BaseEntity {
     })
     organization: Organization;
 
-    @Column()
+    @Column({
+        length: 50,
+        nullable: false
+    })
     name: string
 
-    @Column()
+    @Column({nullable: false})
     status: number
 
     @OneToMany(() => Repository, (repository) => repository.tribe)

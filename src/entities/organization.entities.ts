@@ -13,10 +13,13 @@ export class Organization extends BaseEntity {
     @PrimaryGeneratedColumn()
     id_organization: number
 
-    @Column()
+    @Column({
+        length: 50,
+        nullable: false
+    })
     name: string
 
-    @Column()
+    @Column({nullable: false})
     status: number
 
     @OneToMany(() => Tribe, (tribe) => tribe.organization)
