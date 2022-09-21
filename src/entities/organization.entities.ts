@@ -19,7 +19,7 @@ export class Organization extends BaseEntity {
     })
     name: string
 
-    @Column({nullable: false})
+    @Column({ nullable: false })
     status: number
 
     @OneToMany(() => Tribe, (tribe) => tribe.organization)

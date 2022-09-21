@@ -1,10 +1,10 @@
 import { DataSource } from 'typeorm'
-import {Organization} from './entities/organization.entities'
-import {Tribe} from './entities/tribe.entities'
-import {Repository} from './entities/repository.entities'
-import {Metrics} from './entities/metrics.entities'
+import { Organization } from './entities/organization.entities'
+import { Tribe } from './entities/tribe.entities'
+import { Repository } from './entities/repository.entities'
+import { Metrics } from './entities/metrics.entities'
+import dotenv from 'dotenv'
 
-const dotenv = require('dotenv');
 dotenv.config();
 
 export const AppDataSource = new DataSource({

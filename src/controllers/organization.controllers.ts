@@ -12,8 +12,7 @@ import {
     findOrganizationByName,
     createOrganizationSevice,
     findOrganizations,
-    findOrganizationById,
-    findOrganizationById2
+    findOrganizationById
 } from '../services/organization.services'
 
 export const createOrganization = async (
@@ -26,7 +25,7 @@ export const createOrganization = async (
         const organizationInDB = await findOrganizationByName(req.body.name as string);
 
         if (organizationInDB != null) {
-            return res.status(409).json({ message: 'Nombre de organización ya existe'});
+            return res.status(409).json({ message: 'Nombre de organización ya existe' });
         }
 
         const result = await createOrganizationSevice(req.body);
@@ -44,7 +43,7 @@ export const createOrganization = async (
 };
 
 export const getOrganizations = async (
-    req: Request, 
+    req: Request,
     res: Response,
     next: NextFunction
 ) => {
@@ -64,7 +63,7 @@ export const getOrganization = async (
     next: NextFunction
 ) => {
     try {
-        const organizationInDB = await findOrganizationById2(Number(req.params.id_organization));
+        const organizationInDB = await findOrganizationById(Number(req.params.id_organization));
 
         if (!organizationInDB) {
             return next(new AppError(404, 'Organización con ese ID no encontrada'));
@@ -92,7 +91,7 @@ export const updateOrganization = async (
         Object.assign(organizationInDB, req.body);
 
         const updatedOrganization = await organizationInDB.save();
-        
+
         res.status(200).json(updatedOrganization);
     } catch (err: any) {
         next(err);

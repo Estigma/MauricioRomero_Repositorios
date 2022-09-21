@@ -28,7 +28,7 @@ export class Tribe extends BaseEntity {
     })
     name: string
 
-    @Column({nullable: false})
+    @Column({ nullable: false })
     status: number
 
     @OneToMany(() => Repository, (repository) => repository.tribe)

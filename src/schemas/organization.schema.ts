@@ -1,17 +1,17 @@
-import {z, object, TypeOf} from 'zod';
+import { z, object, TypeOf } from 'zod';
 
 const params = {
     params: z.object({
         id_organization: z.string() || z.number(),
     }),
-  };
+};
 
 export const createOrganizationSchema = object({
     body: z.object({
         name: z
-        .string({required_error: 'name is required', invalid_type_error: 'name string type is required'})
-        .min(1, 'name must contain at least 1 character')
-        .max(50, 'name must contain at most 50 characters'),        
+            .string({ required_error: 'name is required', invalid_type_error: 'name string type is required' })
+            .min(1, 'name must contain at least 1 character')
+            .max(50, 'name must contain at most 50 characters'),
         status: z.number({
             required_error: 'status is required'
         })
@@ -28,11 +28,11 @@ export const updateOrganizationSchema = object({
 
 export const getOrganizationSchema = object({
     ...params,
-  });
+});
 
-  export const deleteOrganizationSchema = object({
+export const deleteOrganizationSchema = object({
     ...params,
-  });
+});
 
 export type GetOrganizationInput = TypeOf<typeof getOrganizationSchema>['params'];
 export type CreateOrganizationInput = TypeOf<typeof createOrganizationSchema>['body'];
