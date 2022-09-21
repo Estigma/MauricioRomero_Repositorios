@@ -4,9 +4,11 @@ import cors from 'cors';
 import organizationRoutes from './routes/organization.routes'
 import repositoryRoutes from './routes/repository.routes'
 
+require('dotenv').config();
 
 const app = express();
 var path = require('path')
+
 app.use(express.static(path.join(__dirname, 'build')));
 app.use(morgan('dev'));
 app.use(cors());
