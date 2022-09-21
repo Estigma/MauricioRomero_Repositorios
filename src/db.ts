@@ -1,5 +1,8 @@
 import { DataSource } from 'typeorm'
-import {Organization} from './entities/Organization'
+import {Organization} from './entities/organization.entities'
+import {Tribe} from './entities/tribe.entities'
+import {Repository} from './entities/repository.entities'
+import {Metrics} from './entities/metrics.entities'
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -14,5 +17,5 @@ export const AppDataSource = new DataSource({
     synchronize: false,
     logging: true,
     ssl: true,
-    entities: [Organization]
+    entities: [Organization, Tribe, Repository, Metrics]
 })

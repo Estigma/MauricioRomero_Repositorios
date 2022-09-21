@@ -12,7 +12,8 @@ import {
     findOrganizationByName,
     createOrganizationSevice,
     findOrganizations,
-    findOrganizationById
+    findOrganizationById,
+    findOrganizationById2
 } from '../services/organization.services'
 
 export const createOrganization = async (
@@ -63,7 +64,7 @@ export const getOrganization = async (
     next: NextFunction
 ) => {
     try {
-        const organizationInDB = await findOrganizationById(Number(req.params.id_organization));
+        const organizationInDB = await findOrganizationById2(Number(req.params.id_organization));
 
         if (!organizationInDB) {
             return next(new AppError(404, 'Organización con ese ID no encontrada'));
