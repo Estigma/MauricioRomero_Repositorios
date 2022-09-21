@@ -1,13 +1,16 @@
 import { DataSource } from 'typeorm'
 import {Organization} from './entities/Organization'
 
+const dotenv = require('dotenv');
+dotenv.config();
+
 export const AppDataSource = new DataSource({
     type: "cockroachdb",
-    host: "free-tier14.aws-us-east-1.cockroachlabs.cloud",
+    host: process.env.HOST,
     port: 26257,
-    username: "UserRepository",
-    password: "rVe8H--pyPvlIrIh3ukE9A",
-    database: "coarse-roarer-5097.Repositories",
+    username: process.env.USER,
+    password: process.env.PASSWORD,
+    database: process.env.DATABASE,
     synchronize: false,
     logging: true,
     ssl: true,
