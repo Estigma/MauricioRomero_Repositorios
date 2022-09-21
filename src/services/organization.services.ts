@@ -1,7 +1,7 @@
-import { response } from 'express';
 import { AppDataSource } from '../db'
 import { Organization } from '../entities/organization.entities'
 import RepositoryState from '../interfaces/repository.interfaces'
+import fetch from 'node-fetch';
 
 const organizationRepository = AppDataSource.getRepository(Organization);
 
@@ -26,7 +26,7 @@ export const findOrganizationById2 = async (id_organization: number) => {
         .printSql()
         .getRawMany()
 
-    //const status = await getConvertedData()
+    const status = await getReposityState()
 
     console.log(status)
 
@@ -42,3 +42,12 @@ export const createOrganizationSevice = async (organization: Partial<Organizatio
     return await organizationRepository.save(organizationRepository.create(organization));
 };
 
+function getReposityState(): Promise<RepositoryState[]> {
+    return fetch('http://localhost:3000/repositories/status', {
+        method: 'GET',
+    })
+        .then((response: { json: () => any; }) => response.json()) // Parse the response in JSON
+        .then((response: RepositoryState[]) => {
+            return response as RepositoryState[]; // Cast the response type to our interface
+        });
+}
