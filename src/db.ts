@@ -8,7 +8,7 @@ import dotenv from 'dotenv'
 dotenv.config();
 
 export const AppDataSource = new DataSource({
-    type: 'postgres',
+    type: 'cockroachdb',
     host: process.env.HOST,
     port: Number(process.env.PORT),
     username: process.env.USER,
