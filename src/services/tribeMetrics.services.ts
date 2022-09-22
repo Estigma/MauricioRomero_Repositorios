@@ -11,24 +11,23 @@ import dotenv from 'dotenv'
 dotenv.config();
 
 
-export const getMetricsByTribe = async (id_tribe: number, fecha: string, estado: string, porcentaje: string) => {
+export const getMetricsByTribe = async (id_tribe: number, fechaInicio: string, fechaFin: string, estado: string, porcentaje: string) => {
     const tribeInDB = await findTribeById(id_tribe)
-    let fechaRepositorio = new Date();
+
 
     if (tribeInDB === null) {
         return new AppError(400, 'La Tribu no se encuentra registrada')
     }
 
-    if (fecha !== '') {
+    const metrics = await getMetricsfromDB(id_tribe, fechaInicio, fechaFin, estado, porcentaje);
 
-        fechaRepositorio = new Date(fecha)
-
-        if (fechaRepositorio.toString() === 'Invalid Date') {
-            return new AppError(400, 'Fecha no válida')
-        }
+    if (metrics instanceof AppError) {
+        return metrics
+    }
+    if (!estado && !porcentaje && !fechaInicio && !fechaFin && Object.keys(metrics).length === 0) {
+        return new AppError(400, 'La Tribu no tiene repositorios que cumplan con la cobertura necesaria')
     }
 
-    const metrics = await getMetricsfromDB(id_tribe, fecha, estado, porcentaje);
     const tribeMetricsDtos: TribeMetricsDto[] = [];
     const repositoriesStatus = await getRepositoriesState1();
 
@@ -73,13 +72,10 @@ export const getMetricsByTribe = async (id_tribe: number, fecha: string, estado:
         tribeMetricsDtos.push(tribeMetricsDto);
     });
 
-
-    //Object.keys(tribeMetricsDtos).length
-
     return tribeMetricsDtos;
 };
 
-const getMetricsfromDB = async (id_tribe: number, fecha: string, estado: string, porcentaje: string) => {
+const getMetricsfromDB = async (id_tribe: number, fechaInicio: string, fechaFin: string, estado: string, porcentaje: string) => {
     const query = AppDataSource
         .getRepository(Organization)
         .createQueryBuilder("organization")
@@ -98,12 +94,38 @@ const getMetricsfromDB = async (id_tribe: number, fecha: string, estado: string,
     }
 
     if (porcentaje) {
-        query.andWhere("metrics.coverage >= :coverageParam", { coverageParam: Number(porcentaje)/100 })
+        query.andWhere("metrics.coverage >= :coverageParam", { coverageParam: Number(porcentaje) / 100 })
     }
 
-    //if (fecha) {
-    //    query.andWhere("metrics.coverage = :coverageParam", { coverageParam: porcentaje })
-    //}
+    let fechaRepositorioInicio = new Date('2000-01-01');
+    let fechaRepositorioFin = new Date();
+
+    if (fechaInicio !== '') {
+
+        fechaRepositorioInicio = new Date(fechaInicio)
+
+        if (fechaRepositorioInicio.toString() === 'Invalid Date') {
+            return new AppError(400, 'Fecha de inicio no válida')
+        }
+
+        query.andWhere("repository.create_time >= :fechaIniParam", { fechaIniParam: fechaRepositorioInicio })
+    }
+
+    if (fechaFin !== '') {
+
+        fechaRepositorioFin = new Date(fechaInicio)
+
+        if (fechaRepositorioFin.toString() === 'Invalid Date') {
+            return new AppError(400, 'Fecha de fin no válida')
+        }
+
+        query.andWhere("repository.create_time <= :fechaFinParam", { fechaFinParam: fechaRepositorioFin })
+    }
+
+    if (!estado && !porcentaje && !fechaInicio && !fechaFin) {
+        query.andWhere("repository.state = :stateParam", { stateParam: 'E' })
+        query.andWhere("metrics.coverage >= :coverageParam", { coverageParam: 0.75 })
+    }
 
     const categoriesWithQuestions = await query.getRawMany()
 

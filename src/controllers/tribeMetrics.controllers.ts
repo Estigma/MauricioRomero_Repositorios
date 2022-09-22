@@ -10,10 +10,11 @@ export const getTribeMetrics = async (
 ) => {
     try {
         const estado = req.query.estado?.toString() || ''
-        const fecha = req.query.fecha?.toString() || ''
+        const fechaInicio = req.query.fechaInicio?.toString() || ''
+        const fechaFin = req.query.fechaFin?.toString() || ''
         const porcentaje = req.query.porcentaje?.toString() || ''
 
-        const organizationInDB = await getMetricsByTribe(Number(req.params.id_tribe), fecha, estado, porcentaje);
+        const organizationInDB = await getMetricsByTribe(Number(req.params.id_tribe), fechaInicio, fechaFin, estado, porcentaje);
         if (organizationInDB instanceof Error) {
             return res.status(organizationInDB.statusCode || 404).json({ message: organizationInDB.message });
         }

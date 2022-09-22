@@ -8,7 +8,8 @@ const params = {
 
 const query = {
     query: z.object({
-        fecha: z.string(),
+        fechaInicio: z.string(),
+        fechaFin: z.string(),
         estado: z.string(),
         porcentaje: z.string()
     }).partial(),
