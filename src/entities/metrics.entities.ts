@@ -5,7 +5,8 @@ import {
     BaseEntity,
     JoinColumn,
     OneToOne,
-    PrimaryColumn
+    PrimaryColumn,
+    Double
 } from 'typeorm'
 import { type } from 'os';
 
@@ -23,6 +24,9 @@ export class Metrics extends BaseEntity {
     id_repository: number
 
     @Column({ nullable: false })
+    bugs: number
+
+    @Column({ type: "decimal", precision: 3, scale: 2, default: 0, nullable: false })
     coverage: number
 
     @Column({ nullable: false })

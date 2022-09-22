@@ -4,7 +4,7 @@ interface TribeMetricsDTO {
     name: string
     tribe: string
     organization: string
-    coverage: number
+    coverage: string
     code_smells: number
     bugs: number
     vulnerabilities: number

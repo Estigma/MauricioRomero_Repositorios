@@ -5,21 +5,19 @@ import fetch from 'node-fetch'
 import TribeMetricsDto from '../interfaces/tribeMetrics.interfaces'
 import { findTribeById } from './tribe.services'
 import AppError from '../utils/appError'
-//import { CodigosVerificacion } from '../utils/enumerables'
 import dotenv from 'dotenv'
 
 dotenv.config();
 
 
-export const getMetricsByTribe = async (id_tribe: number, fechaInicio: string, fechaFin: string, estado: string, porcentaje: string) => {
-    const tribeInDB = await findTribeById(id_tribe)
-
+export const getMetricsByTribe = async (id_tribe: string, fechaInicio: string, fechaFin: string, estado: string, porcentaje: string) => {
+    const tribeInDB = await findTribeById(Number(id_tribe))
 
     if (tribeInDB === null) {
         return new AppError(400, 'La Tribu no se encuentra registrada')
     }
 
-    const metrics = await getMetricsfromDB(id_tribe, fechaInicio, fechaFin, estado, porcentaje);
+    const metrics = await getMetricsfromDB(Number(id_tribe), fechaInicio, fechaFin, estado, porcentaje);
 
     if (metrics instanceof AppError) {
         return metrics
@@ -29,7 +27,7 @@ export const getMetricsByTribe = async (id_tribe: number, fechaInicio: string, f
     }
 
     const tribeMetricsDtos: TribeMetricsDto[] = [];
-    const repositoriesStatus = await getRepositoriesState1();
+    const repositoriesStatus = await getRepositoriesState();
 
     repositoriesStatus.forEach(element => {
         switch (element.state) {
@@ -58,7 +56,7 @@ export const getMetricsByTribe = async (id_tribe: number, fechaInicio: string, f
             name: element.name,
             tribe: element.tribe,
             organization: element.organization,
-            coverage: element.coverage,
+            coverage: (element.coverage * 100) + '%',
             code_smells: element.code_smells,
             bugs: element.bugs,
             vulnerabilities: element.vulnerabilities,
@@ -125,6 +123,7 @@ const getMetricsfromDB = async (id_tribe: number, fechaInicio: string, fechaFin:
     if (!estado && !porcentaje && !fechaInicio && !fechaFin) {
         query.andWhere("repository.state = :stateParam", { stateParam: 'E' })
         query.andWhere("metrics.coverage >= :coverageParam", { coverageParam: 0.75 })
+        query.andWhere("date_part('year', repository.create_time) >= :yearParam", { yearParam: new Date().getFullYear() })
     }
 
     const categoriesWithQuestions = await query.getRawMany()
@@ -132,26 +131,13 @@ const getMetricsfromDB = async (id_tribe: number, fechaInicio: string, fechaFin:
     return categoriesWithQuestions;
 };
 
+export const getRepositoriesState = async () => {
 
-
-export const getRepositoriesState1 = async () => {
-
-    const apiResponse = await fetch(
-        'http://localhost:3000/repositories/status'
+    const apiResponse = await fetch('' + process.env.REPOSITORY_STATUS_URL + ''        
     )
     const apiResponseJson = await apiResponse.json()
 
     const array = Array.from(Object.values(apiResponseJson))[0];
 
     return array as RepositoryState[]
-}
-
-function getRepositoriesState(): Promise<RepositoryState[]> {
-    return fetch('http://localhost:3000/repositories/status', {
-        method: 'GET',
-    })
-        .then((response: { json: () => any; }) => response.json()) // Parse the response in JSON
-        .then((response: RepositoryState[]) => {
-            return response as RepositoryState[]; // Cast the response type to our interface
-        });
 }

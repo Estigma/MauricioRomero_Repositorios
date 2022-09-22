@@ -8,7 +8,7 @@ import {
     CreateDateColumn,
     ManyToOne,
     JoinColumn,
-    OneToOne
+    OneToMany
 } from 'typeorm'
 
 
@@ -45,10 +45,6 @@ export class Repository extends BaseEntity {
     })
     status: string
 
-    @OneToOne(type => Metrics)
-    @JoinColumn({
-        name: 'id_repository',
-        referencedColumnName: 'id_repository'
-    })
+    @OneToMany(() => Metrics, (metrics) => metrics.repository)
     metrics: Metrics;
 }

@@ -19,3 +19,7 @@ export const createOrganizationSevice = async (organization: Partial<Organizatio
     return await organizationRepository.save(organizationRepository.create(organization));
 };
 
+export const updateOrganizationSevice = async (organization: Organization) => {
+    return await organizationRepository.save(organization);
+};
+

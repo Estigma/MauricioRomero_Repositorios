@@ -8,14 +8,14 @@ import dotenv from 'dotenv'
 dotenv.config();
 
 export const AppDataSource = new DataSource({
-    type: "cockroachdb",
+    type: 'cockroachdb',
     host: process.env.HOST,
-    port: 26257,
+    port: Number(process.env.PORT),
     username: process.env.USER,
     password: process.env.PASSWORD,
     database: process.env.DATABASE,
-    synchronize: false,
+    synchronize: process.env.SYNCHRONIZE === 'true',
     logging: true,
-    ssl: true,
+    ssl: process.env.SSL === 'true',
     entities: [Organization, Tribe, Repository, Metrics]
 })
