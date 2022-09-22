@@ -1,6 +1,6 @@
 import express from 'express';
 
-import {getData} from '../controllers/repository.controller';
+import { getData } from '../controllers/repository.controller';
 const router = express.Router();
 
 router

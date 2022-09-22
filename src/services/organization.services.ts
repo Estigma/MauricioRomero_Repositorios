@@ -1,5 +1,5 @@
 import { AppDataSource } from '../db'
-import { Organization } from "../entities/Organization"
+import { Organization } from '../entities/organization.entities'
 
 const organizationRepository = AppDataSource.getRepository(Organization);
 
@@ -18,3 +18,4 @@ export const findOrganizations = async () => {
 export const createOrganizationSevice = async (organization: Partial<Organization>) => {
     return await organizationRepository.save(organizationRepository.create(organization));
 };
+

@@ -1,18 +1,19 @@
 import express from 'express';
 
 import {
-    getOrganizations, 
-    getOrganization, 
-    createOrganization, 
-    updateOrganization, 
-    deleteOrganization} from '../controllers/organization.controllers'
+    getOrganizations,
+    getOrganization,
+    createOrganization,
+    updateOrganization,
+    deleteOrganization
+} from '../controllers/organization.controllers'
 import { validate } from '../middleware/validate';
 import {
-    createOrganizationSchema, 
+    createOrganizationSchema,
     getOrganizationSchema,
     deleteOrganizationSchema,
     updateOrganizationSchema
-  } from '../schemas/organization.schema';
+} from '../schemas/organization.schema';
 
 const router = express.Router();
 router
