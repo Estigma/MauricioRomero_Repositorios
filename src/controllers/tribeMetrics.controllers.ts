@@ -1,5 +1,4 @@
 import { getMetricsByTribe } from '../services/tribeMetrics.services'
-import { Request, Response, NextFunction } from 'express'
 import Json2csv  from 'json2csv';
 import { Get, Query, Path, Route } from "tsoa";
 import TribeMetricsDTO from '../interfaces/tribeMetrics.interfaces';

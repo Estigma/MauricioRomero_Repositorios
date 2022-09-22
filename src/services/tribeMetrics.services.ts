@@ -133,8 +133,7 @@ const getMetricsfromDB = async (id_tribe: number, fechaInicio: string, fechaFin:
 
 export const getRepositoriesState = async () => {
 
-    const apiResponse = await fetch(
-        'http://localhost:3000/repositories/status'
+    const apiResponse = await fetch('' + process.env.REPOSITORY_STATUS_URL + ''        
     )
     const apiResponseJson = await apiResponse.json()
 

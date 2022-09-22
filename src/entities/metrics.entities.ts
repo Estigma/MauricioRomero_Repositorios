@@ -26,7 +26,7 @@ export class Metrics extends BaseEntity {
     @Column({ nullable: false })
     bugs: number
 
-    @Column({ nullable: false })
+    @Column({ type: "decimal", precision: 3, scale: 2, default: 0, nullable: false })
     coverage: number
 
     @Column({ nullable: false })
