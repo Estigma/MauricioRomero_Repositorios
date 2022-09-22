@@ -1,7 +1,7 @@
-import {getTribeRepositoriesMectrics} from '../schemas/tribeMetrics.schema';
-import {getMetricsByTribe} from '../services/tribeMetrics.services'
+import { getTribeRepositoriesMectrics } from '../schemas/tribeMetrics.schema';
+import { getMetricsByTribe } from '../services/tribeMetrics.services'
 import { Request, Response, NextFunction } from 'express'
-import AppError from '../utils/appError'
+import { INVALID } from 'zod';
 
 export const getTribeMetrics = async (
     req: Request<getTribeRepositoriesMectrics>,
@@ -9,15 +9,17 @@ export const getTribeMetrics = async (
     next: NextFunction
 ) => {
     try {
-        const organizationInDB = await getMetricsByTribe(Number(req.params.id_tribe));
+        const estado = req.query.estado?.toString() || ''
+        const fecha = req.query.fecha?.toString() || ''
+        const porcentaje = req.query.porcentaje?.toString() || ''
 
-        if (!organizationInDB) {
-            return next(new AppError(404, 'Organización con ese ID no encontrada'));
+        const organizationInDB = await getMetricsByTribe(Number(req.params.id_tribe), fecha, estado, porcentaje);
+        if (organizationInDB instanceof Error) {
+            return res.status(organizationInDB.statusCode || 404).json({ message: organizationInDB.message });
         }
-
         res.status(200).json(organizationInDB);
-
-    } catch (err: any) {
+    }
+    catch (err: any) {
         next(err);
     }
 };

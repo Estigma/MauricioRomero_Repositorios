@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express'
-import AppError from '../utils/appError'
 
 import {
     GetOrganizationInput,
@@ -66,7 +65,7 @@ export const getOrganization = async (
         const organizationInDB = await findOrganizationById(Number(req.params.id_organization));
 
         if (!organizationInDB) {
-            return next(new AppError(404, 'Organización con ese ID no encontrada'));
+            return res.status(400).json({ message: 'Organización con ese ID no encontrada' });
         }
 
         res.status(200).json(organizationInDB);
@@ -85,7 +84,7 @@ export const updateOrganization = async (
         const organizationInDB = await findOrganizationById(Number(req.params.id_organization));
 
         if (!organizationInDB) {
-            return next(new AppError(404, 'Organización con ese ID no encontrada'));
+            return res.status(400).json({ message: 'Organización con ese ID no encontrada' });
         }
 
         Object.assign(organizationInDB, req.body);
@@ -107,7 +106,7 @@ export const deleteOrganization = async (
         const organizationInDB = await findOrganizationById(Number(req.params.id_organization));
 
         if (!organizationInDB) {
-            return next(new AppError(404, 'Organización con ese ID no encontrada'));
+            return res.status(400).json({ message: 'Organización con ese ID no encontrada' });
         }
 
         await organizationInDB.remove();

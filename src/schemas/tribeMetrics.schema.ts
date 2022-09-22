@@ -6,8 +6,16 @@ const params = {
     }),
 };
 
+const query = {
+    query: z.object({
+        fecha: z.string(),
+        estado: z.string(),
+        porcentaje: z.string()
+    }).partial(),
+};
+
 export const getTribeRepositoriesMectrics = object({
-    ...params,
+    ...params, ...query
 });
 
 export type getTribeRepositoriesMectrics = TypeOf<typeof getTribeRepositoriesMectrics>['params'];
