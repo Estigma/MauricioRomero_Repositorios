@@ -24,8 +24,8 @@ Nota3: La BDD debe existir, el proyecto no crea Bases de Datos.
 5. Ejecutar el comando npx tsc en el terminal.
 
 ## Ejecución
-1.Ejecutar comando npm run dev en el terminal.
-
+1. Ejecutar comando npm run dev en el terminal.
+2. Importar el archivo Repositorios.postman_collection.json que se encuentra en la raíz del proyecto en Postman.
 
 ## Pruebas
 
