@@ -1,119 +1,77 @@
-import { Request, Response, NextFunction } from 'express'
-
-import {
-    GetOrganizationInput,
-    CreateOrganizationInput,
-    DeleteOrganizationInput,
-    UpdateOrganizationInput
-} from '../schemas/organization.schema';
+import { Get, Post, Body, Route, Path, Delete } from "tsoa";
+import { Organization } from '../entities/organization.entities';
 
 import {
     findOrganizationByName,
     createOrganizationSevice,
     findOrganizations,
-    findOrganizationById
+    findOrganizationById,
+    updateOrganizationSevice
 } from '../services/organization.services'
+import AppError from "../utils/appError";
 
-export const createOrganization = async (
-    req: Request<{}, {}, CreateOrganizationInput>,
-    res: Response,
-    next: NextFunction
-) => {
-    try {
+@Route("organization")
+export default class OrganizationController {
 
-        const organizationInDB = await findOrganizationByName(req.body.name as string);
+    @Get("/")
+    public async getOrganizations(): Promise<Array<Organization>> {
+        const organizationsInDB = await findOrganizations();
+        
+        return organizationsInDB;
+    }
+
+    @Get("/:id_organization")
+    public async getOrganization(@Path() id_organization: string): Promise<Organization | AppError> {
+        const organizationInDB = await findOrganizationById(Number(id_organization));
+        
+        if (!organizationInDB) {
+            return new AppError(400, 'Id de organización no válido')   
+        }
+
+        return organizationInDB;
+    };
+
+    @Post("/")
+    public async createOrganization(@Body() body: Organization): Promise<Organization | AppError> {
+        const organizationInDB = await findOrganizationByName(body.name as string);
 
         if (organizationInDB != null) {
-            return res.status(409).json({ message: 'Nombre de organización ya existe' });
+            return new AppError(409, 'Nombre de organización ya existe')            
         }
 
-        const result = await createOrganizationSevice(req.body);
+        const result = await createOrganizationSevice(body);
 
-        res.status(201).json({
-            status: 'success',
-            data: {
-                result,
-            },
-        });
+        return result;
 
-    } catch (err: any) {
-        next(err);
-    }
-};
+    };
 
-export const getOrganizations = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
-    try {
-        const organizationsInDB = await findOrganizations();
-
-        res.status(200).json(organizationsInDB);
-
-    } catch (err: any) {
-        next(err);
-    }
-};
-
-export const getOrganization = async (
-    req: Request<GetOrganizationInput>,
-    res: Response,
-    next: NextFunction
-) => {
-    try {
-        const organizationInDB = await findOrganizationById(Number(req.params.id_organization));
+    @Path("/:id_organization")
+    public async updateOrganization(@Path() id_organization: string, @Body() body: Organization): Promise<Organization | AppError> {
+        const organizationInDB = await findOrganizationById(Number(id_organization));
 
         if (!organizationInDB) {
-            return res.status(400).json({ message: 'Organización con ese ID no encontrada' });
+            return new AppError(400, 'Id de organización no válido')   
         }
 
-        res.status(200).json(organizationInDB);
+        Object.assign(organizationInDB, body);
 
-    } catch (err: any) {
-        next(err);
-    }
-};
+        const updatedOrganization = await updateOrganizationSevice(organizationInDB)
 
-export const updateOrganization = async (
-    req: Request<UpdateOrganizationInput['params'], {}, UpdateOrganizationInput['body']>,
-    res: Response,
-    next: NextFunction
-) => {
-    try {
-        const organizationInDB = await findOrganizationById(Number(req.params.id_organization));
+        return updatedOrganization;
+
+    };
+
+    @Delete("/:id_organization")
+    public async deleteOrganization(@Path() id_organization: string): Promise<Organization | AppError> {
+        const organizationInDB = await findOrganizationById(Number(id_organization));
 
         if (!organizationInDB) {
-            return res.status(400).json({ message: 'Organización con ese ID no encontrada' });
-        }
-
-        Object.assign(organizationInDB, req.body);
-
-        const updatedOrganization = await organizationInDB.save();
-
-        res.status(200).json(updatedOrganization);
-    } catch (err: any) {
-        next(err);
-    }
-};
-
-export const deleteOrganization = async (
-    req: Request<DeleteOrganizationInput>,
-    res: Response,
-    next: NextFunction
-) => {
-    try {
-        const organizationInDB = await findOrganizationById(Number(req.params.id_organization));
-
-        if (!organizationInDB) {
-            return res.status(400).json({ message: 'Organización con ese ID no encontrada' });
+            return new AppError(400, 'Id de organización no válido')   
         }
 
         await organizationInDB.remove();
 
-        res.status(204).json();
+        return organizationInDB;
 
-    } catch (err: any) {
-        next(err);
     }
-};
+}
