@@ -10,14 +10,14 @@ import dotenv from 'dotenv'
 dotenv.config();
 
 
-export const getMetricsByTribe = async (id_tribe: number, fechaInicio: string, fechaFin: string, estado: string, porcentaje: string) => {
-    const tribeInDB = await findTribeById(id_tribe)
+export const getMetricsByTribe = async (id_tribe: string, fechaInicio: string, fechaFin: string, estado: string, porcentaje: string) => {
+    const tribeInDB = await findTribeById(Number(id_tribe))
 
     if (tribeInDB === null) {
         return new AppError(400, 'La Tribu no se encuentra registrada')
     }
 
-    const metrics = await getMetricsfromDB(id_tribe, fechaInicio, fechaFin, estado, porcentaje);
+    const metrics = await getMetricsfromDB(Number(id_tribe), fechaInicio, fechaFin, estado, porcentaje);
 
     if (metrics instanceof AppError) {
         return metrics

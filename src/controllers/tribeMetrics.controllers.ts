@@ -16,21 +16,25 @@ export default class TribeMetricsController {
         const fechaFin = query.fechaFin?.toString() || ''
         const porcentaje = query.porcentaje?.toString() || ''
 
-        const tribeMetrics = await getMetricsByTribe(Number(id_tribe), fechaInicio, fechaFin, estado, porcentaje);
+        const tribeMetrics = await getMetricsByTribe(id_tribe, fechaInicio, fechaFin, estado, porcentaje);
         
         return tribeMetrics
     }
 
     @Get("/")    
-    public async getTribeMetricsCSV(@Path() id_tribe: string, @Query() query: QueryInputDTO): Promise<QueryOutputDTO>
+    public async getTribeMetricsCSV(@Path() id_tribe: string, @Query() query: QueryInputDTO): Promise<QueryOutputDTO | AppError>
     {
         const estado = query.estado?.toString() || ''
         const fechaInicio = query.fechaInicio?.toString() || ''
         const fechaFin = query.fechaFin?.toString() || ''
         const porcentaje = query.porcentaje?.toString() || ''
 
-        const tribeMetrics = await getMetricsByTribe(Number(id_tribe), fechaInicio, fechaFin, estado, porcentaje);
+        const tribeMetrics = await getMetricsByTribe(id_tribe, fechaInicio, fechaFin, estado, porcentaje);
         
+        if (tribeMetrics instanceof AppError) {
+            return tribeMetrics;
+        }
+
         let fields = ['id', 'name', 'tribe', 'organization', 'coverage', 'code_smells', 'bugs', 'vulnerabilities', 
         'hotspots', 'status', 'state'];
 
@@ -44,35 +48,4 @@ export default class TribeMetricsController {
 
         return queryOutput
     }
-
-/*export const getTribeMetricsCSV = async (
-    req: Request<getTribeRepositoriesMectrics>,
-    res: Response,
-    next: NextFunction
-) => {
-    try {
-        const estado = req.query.estado?.toString() || ''
-        const fechaInicio = req.query.fechaInicio?.toString() || ''
-        const fechaFin = req.query.fechaFin?.toString() || ''
-        const porcentaje = req.query.porcentaje?.toString() || ''
-
-        const tribeMetrics = await getMetricsByTribe(Number(req.params.id_tribe), fechaInicio, fechaFin, estado, porcentaje);
-        if (tribeMetrics instanceof Error) {
-            return res.status(tribeMetrics.statusCode || 404).json({ message: tribeMetrics.message });
-        }
-
-        let fields = ['id', 'name', 'tribe', 'organization', 'coverage', 'code_smells', 'bugs', 'vulnerabilities', 
-        'hotspots', 'status', 'state'];
-
-        const json2csvParser = new Json2csv.Parser({ fields});
-        const csv = json2csvParser.parse(tribeMetrics);
-       
-        res.attachment('metrics_' + (new Date()).toString() + '.csv');
-        res.status(200).send(csv);
-
-    }
-    catch (err: any) {
-        next(err);
-    }
-};*/
 }
