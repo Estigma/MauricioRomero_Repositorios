@@ -7,19 +7,19 @@
 3. Ejecutar npm install en el terminal.
 4. Crear archivo de configuración .env en la raiz del proyecto y agregar el siguiente contenido.
 
-USER=UserRepository
-PASSWORD=****
-HOST=****
-DATABASE=****
-NODE_ENV=development
-REPOSITORY_STATUS_URL=http://localhost:3000/repositories/status
-SSL=true
-SYNCHRONIZE=false
-PORT=26257
+    USER=UserRepository
+    PASSWORD=****
+    HOST=****
+    DATABASE=****
+    NODE_ENV=development
+    REPOSITORY_STATUS_URL=http://localhost:3000/repositories/status
+    SSL=true
+    SYNCHRONIZE=false
+    PORT=26257
 
-Nota: **** Reemplazar por los valores correspondientes.
-Nota2: Se recomienda mantener la variable SSL en true durante la primera ejecución para que genenere la BDD.
-Nota3: La BDD debe existir, el proyecto no crea Bases de Datos.
+    Nota: **** Reemplazar por los valores correspondientes.
+    Nota2: Se recomienda mantener la variable SSL en true durante la primera ejecución para que genenere la BDD.
+    Nota3: La BDD debe existir, el proyecto no crea Bases de Datos.
 
 5. Ejecutar el comando npx tsc en el terminal.
 
@@ -30,6 +30,3 @@ Nota3: La BDD debe existir, el proyecto no crea Bases de Datos.
 ## Pruebas
 
 1. Ejecutar comando npm run test en el terminal.
-
-## Contenido del archivo .env
-
